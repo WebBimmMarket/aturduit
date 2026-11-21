@@ -1,82 +1,247 @@
-html
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AturDuit — aplikasi keuangan pribadi gratis. Catat pemasukan dan pengeluaran, atur anggaran 50/30/20, dan capai tujuan tabungan. Data tersimpan di perangkatmu.">
   <title>AturDuit — Kelola Keuanganmu</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body id="top">
   <header class="header">
-    <a class="logo" href="#top">💰 AturDuit</a>
-    <button class="menu-btn" id="menuBtn" aria-label="Buka menu" aria-expanded="false">☰</button>
-    <nav class="nav" id="nav">
+    <a class="logo" href="#top" aria-label="AturDuit — kembali ke atas">
+      <svg class="logo-icon" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#f59e0b"/><text x="12" y="16.5" text-anchor="middle" font-size="11" font-weight="700" fill="#1f2937">Rp</text></svg>
+      AturDuit
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-label="Buka menu" aria-expanded="false" aria-controls="nav">☰</button>
+    <nav class="nav" id="nav" aria-label="Navigasi utama">
       <a href="#fitur">Fitur</a>
+      <a href="#aplikasi">Aplikasi</a>
       <a href="#kalkulator">Kalkulator</a>
-      <a href="#cta">Mulai</a>
+      <a href="#tujuan">Tujuan</a>
+      <a href="admin.html">Admin</a>
+      <a class="nav-cta" href="#aplikasi">Buka Aplikasi</a>
     </nav>
   </header>
 
+  <div class="announce" id="announce" hidden></div>
 
   <main>
     <section class="hero">
-      <h1>Keuangan Rapi, Hidup Tenang</h1>
-      <p>Catat pemasukan, atur anggaran, dan capai tujuan tabunganmu — semua dalam satu tempat.</p>
-      <a class="btn" href="#kalkulator">Coba Kalkulator Gratis</a>
-    </section>
-
-
-    <section class="fitur" id="fitur">
-      <h2>Kenapa AturDuit?</h2>
-      <div class="cards">
-        <article class="card">
-          <h3>📝 Catat Pengeluaran</h3>
-          <p>Setiap rupiah tercatat, tidak ada lagi uang yang hilang tanpa jejak.</p>
-        </article>
-        <article class="card">
-          <h3>📊 Anggaran Bulanan</h3>
-          <p>Bagi pemasukan ke kebutuhan, keinginan, dan tabungan secara otomatis.</p>
-        </article>
-        <article class="card">
-          <h3>🎯 Tujuan Tabungan</h3>
-          <p>Tentukan target, pantau progres, dan rayakan saat tercapai.</p>
-        </article>
+      <div class="hero-inner">
+        <p class="hero-eyebrow">Aplikasi keuangan pribadi · Gratis · Tanpa daftar</p>
+        <h1>Keuangan Rapi, Hidup Tenang</h1>
+        <p class="hero-sub">Catat pemasukan dan pengeluaran, ikuti anggaran 50/30/20, dan pantau tujuan tabunganmu — semua dalam satu tempat. Datamu tersimpan di perangkatmu sendiri, bukan di server kami.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#aplikasi">Mulai Mencatat — Gratis</a>
+          <a class="btn btn-ghost" href="#kalkulator">Hitung Anggaran 50/30/20</a>
+        </div>
+        <ul class="hero-stats" aria-label="Keunggulan AturDuit">
+          <li><strong>100%</strong><span>Gratis</span></li>
+          <li><strong>0</strong><span>Akun / kata sandi</span></li>
+          <li><strong>50/30/20</strong><span>Anggaran otomatis</span></li>
+          <li><strong>100%</strong><span>Data di perangkatmu</span></li>
+        </ul>
       </div>
     </section>
 
-
-    <section class="kalkulator" id="kalkulator">
-      <h2>Kalkulator Anggaran Sederhana</h2>
-      <p>Masukkan pemasukan dan pengeluaran bulananmu:</p>
-      <form class="calc" id="calcForm">
-        <label>
-          Pemasukan / bulan (Rp)
-          <input type="number" id="pemasukan" placeholder="contoh: 5000000" min="0">
-        </label>
-        <label>
-          Pengeluaran / bulan (Rp)
-          <input type="number" id="pengeluaran" placeholder="contoh: 3500000" min="0">
-        </label>
-        <button class="btn" type="submit">Hitung Sisa</button>
-        <p class="hasil" id="hasil"></p>
-      </form>
+    <section class="fitur" id="fitur">
+      <div class="container">
+        <h2>Kenapa AturDuit?</h2>
+        <p class="section-sub">Bukan sekadar kalkulator — alat kerja harian untuk uangmu.</p>
+        <div class="cards">
+          <article class="card">
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 4h16v2H4zM4 9h10v2H4zM4 14h16v2H4zM4 19h10v2H4z" fill="currentColor"/></svg>
+            <h3>Catat Transaksi</h3>
+            <p>Pemasukan dan pengeluaran tercatat per tanggal dan kategori. Cari, saring, dan hapus kapan saja.</p>
+          </article>
+          <article class="card">
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 20V10h3v10H4zm6.5 0V4h3v16h-3zM17 20v-7h3v7h-3z" fill="currentColor"/></svg>
+            <h3>Anggaran 50/30/20</h3>
+            <p>Pemasukanmu otomatis dibagi: 50% kebutuhan, 30% keinginan, 20% tabungan — lengkap dengan batas per kelompok.</p>
+          </article>
+          <article class="card">
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            <h3>Diagram Pengeluaran</h3>
+            <p>Lihat ke mana uangmu pergi lewat diagram kategori bulan berjalan — langsung ketahuan yang bocor.</p>
+          </article>
+          <article class="card">
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 7.7l5.4-.8L12 2z" fill="currentColor"/></svg>
+            <h3>Tujuan Tabungan</h3>
+            <p>Buat target — dana darurat, liburan, DP rumah — dan pantau progresnya sampai tercapai.</p>
+          </article>
+          <article class="card">
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            <h3>Privasi Terjaga</h3>
+            <p>Tidak ada akun, tidak ada pelacakan. Semua data tersimpan di localStorage browser perangkatmu.</p>
+          </article>
+          <article class="card">
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            <h3>Ekspor CSV</h3>
+            <p>Unduh seluruh riwayat transaksimu sebagai file CSV kapan saja. Datamu, hakmu.</p>
+          </article>
+        </div>
+      </div>
     </section>
 
+    <section class="app" id="aplikasi">
+      <div class="container">
+        <h2>Aplikasi Keuangan</h2>
+        <p class="section-sub">Semua angka di bawah dihitung dari transaksimu bulan berjalan (<span id="bulanLabel"></span>).</p>
+
+        <div class="stats" role="group" aria-label="Ringkasan bulan ini">
+          <div class="stat"><span class="stat-label">Saldo bulan ini</span><strong class="stat-value" id="statSaldo">Rp0</strong></div>
+          <div class="stat stat-in"><span class="stat-label">Pemasukan</span><strong class="stat-value" id="statMasuk">Rp0</strong></div>
+          <div class="stat stat-out"><span class="stat-label">Pengeluaran</span><strong class="stat-value" id="statKeluar">Rp0</strong></div>
+        </div>
+
+        <div class="app-grid">
+          <form class="panel" id="txForm" novalidate>
+            <h3>Tambah Transaksi</h3>
+            <div class="field-row">
+              <label>Tanggal
+                <input type="date" id="txTanggal" required>
+              </label>
+              <label>Jenis
+                <select id="txJenis">
+                  <option value="keluar">Pengeluaran</option>
+                  <option value="masuk">Pemasukan</option>
+                </select>
+              </label>
+            </div>
+            <label>Kategori
+              <select id="txKategori"></select>
+            </label>
+            <label>Jumlah (Rp)
+              <input type="number" id="txJumlah" placeholder="contoh: 50000" min="1" step="1" inputmode="numeric" required>
+            </label>
+            <label>Catatan (opsional)
+              <input type="text" id="txCatatan" placeholder="contoh: Belanja mingguan" maxlength="80">
+            </label>
+            <p class="form-error" id="txError" role="alert" hidden></p>
+            <button class="btn btn-primary btn-block" type="submit">Simpan Transaksi</button>
+          </form>
+
+          <div class="panel">
+            <h3>Pengeluaran per Kategori</h3>
+            <div class="chart-wrap">
+              <canvas id="donut" width="220" height="220" aria-label="Diagram pengeluaran per kategori" role="img"></canvas>
+              <div class="chart-center" id="donutCenter"><strong>Rp0</strong><span>total keluar</span></div>
+            </div>
+            <ul class="legend" id="legend"></ul>
+            <p class="empty-note" id="donutEmpty">Belum ada pengeluaran bulan ini. Tambahkan transaksi untuk melihat diagramnya.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Anggaran 50/30/20 — Bulan Ini</h3>
+          <p class="panel-note">Dihitung dari total pemasukan bulan berjalan. Bila belum ada pemasukan, masukkan dulu pemasukanmu di atas.</p>
+          <div id="budgetBars"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Riwayat Transaksi</h3>
+            <div class="tx-tools">
+              <input type="search" id="txCari" placeholder="Cari catatan / kategori…" aria-label="Cari transaksi">
+              <select id="txFilter" aria-label="Saring transaksi">
+                <option value="semua">Semua</option>
+                <option value="masuk">Pemasukan</option>
+                <option value="keluar">Pengeluaran</option>
+              </select>
+              <button class="btn btn-small" type="button" id="btnCsv">Ekspor CSV</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="tx-table">
+              <thead><tr><th>Tanggal</th><th>Kategori</th><th>Catatan</th><th class="num">Jumlah</th><th></th></tr></thead>
+              <tbody id="txList"></tbody>
+            </table>
+          </div>
+          <p class="empty-note" id="txEmpty">Belum ada transaksi. Mulai dengan mencatat pemasukan atau pengeluaran pertamamu.</p>
+          <button class="btn btn-danger-outline btn-small" type="button" id="btnHapusSemua">Hapus Semua Transaksi</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="kalkulator" id="kalkulator">
+      <div class="container">
+        <h2>Kalkulator Anggaran 50/30/20</h2>
+        <p class="section-sub">Masukkan pemasukan bulananmu — pembagiannya langsung terlihat, tanpa perlu daftar.</p>
+        <form class="calc" id="calcForm" novalidate>
+          <label>Pemasukan / bulan (Rp)
+            <input type="number" id="pemasukan" placeholder="contoh: 5000000" min="0" inputmode="numeric">
+          </label>
+          <label>Pengeluaran / bulan saat ini (Rp) — opsional
+            <input type="number" id="pengeluaran" placeholder="contoh: 3500000" min="0" inputmode="numeric">
+          </label>
+          <div class="calc-result" id="calcResult" aria-live="polite">
+            <p class="calc-hint">Isi pemasukanmu untuk melihat pembagian anggaran.</p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="tujuan" id="tujuan">
+      <div class="container">
+        <h2>Tujuan Tabungan</h2>
+        <p class="section-sub">Tentukan target, isi sedikit demi sedikit, dan lihat progresnya.</p>
+        <form class="panel goal-form" id="goalForm" novalidate>
+          <div class="field-row">
+            <label>Nama tujuan
+              <input type="text" id="goalNama" placeholder="contoh: Dana darurat" maxlength="60" required>
+            </label>
+            <label>Target (Rp)
+              <input type="number" id="goalTarget" placeholder="contoh: 10000000" min="1" inputmode="numeric" required>
+            </label>
+          </div>
+          <p class="form-error" id="goalError" role="alert" hidden></p>
+          <button class="btn btn-primary" type="submit">Buat Tujuan</button>
+        </form>
+        <div class="goals" id="goalList"></div>
+        <p class="empty-note" id="goalEmpty">Belum ada tujuan tabungan. Buat yang pertama di atas.</p>
+      </div>
+    </section>
+
+    <section class="faq">
+      <div class="container">
+        <h2>Pertanyaan Umum</h2>
+        <details>
+          <summary>Apakah AturDuit benar-benar gratis?</summary>
+          <p>Ya. Semua fitur di halaman ini gratis dan bisa dipakai tanpa akun. Tidak ada biaya tersembunyi.</p>
+        </details>
+        <details>
+          <summary>Di mana dataku disimpan?</summary>
+          <p>Di browser perangkatmu sendiri (localStorage). Kami tidak mengirim datamu ke server mana pun. Kalau kamu menghapus data browser, riwayatmu ikut terhapus — jadi ekspor CSV secara berkala.</p>
+        </details>
+        <details>
+          <summary>Apa itu aturan 50/30/20?</summary>
+          <p>Aturan praktis membagi pemasukan: 50% untuk kebutuhan (makan, tempat tinggal, tagihan), 30% untuk keinginan (hiburan, makan di luar), dan 20% untuk tabungan atau pelunasan utang. Sesuaikan dengan kondisimu — aturan ini titik awal, bukan hukum.</p>
+        </details>
+        <details>
+          <summary>Bisakah dipakai di HP?</summary>
+          <p>Bisa. Tampilan menyesuaikan layar kecil, dan semua fitur — mencatat, diagram, tujuan — bekerja di HP maupun laptop.</p>
+        </details>
+      </div>
+    </section>
 
     <section class="cta" id="cta">
-      <h2>Mulai Atur Keuanganmu Hari Ini</h2>
-      <p>Gratis, tanpa kartu kredit, dan bisa dipakai langsung.</p>
-      <a class="btn" href="mailto:halo@aturduit.id">Hubungi Kami</a>
+      <div class="container">
+        <h2>Mulai Atur Keuanganmu Hari Ini</h2>
+        <p>Gratis, tanpa kartu kredit, tanpa akun — dan bisa dipakai langsung.</p>
+        <a class="btn btn-primary" href="#aplikasi">Buka Aplikasi</a>
+      </div>
     </section>
   </main>
 
-
   <footer class="footer">
-    <p>© 2026 AturDuit. Semua hak dilindungi.</p>
+    <div class="container footer-inner">
+      <p>© 2026 AturDuit. Semua hak dilindungi.</p>
+      <p><a href="admin.html">Halaman Admin</a> · <a href="mailto:halo@aturduit.id">halo@aturduit.id</a></p>
+    </div>
   </footer>
 
-
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
   <script src="app.js"></script>
 </body>
 </html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Halaman Admin AturDuit — kelola pengumuman, PIN, dan data aplikasi.">
+  <title>Admin — AturDuit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <a class="logo" href="index.html" aria-label="AturDuit — kembali ke beranda">
+      <svg class="logo-icon" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#f59e0b"/><text x="12" y="16.5" text-anchor="middle" font-size="11" font-weight="700" fill="#1f2937">Rp</text></svg>
+      AturDuit <span style="font-weight:400;font-size:0.9rem;opacity:.85">/ Admin</span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Navigasi utama">
+      <a href="index.html">Beranda</a>
+      <a href="index.html#aplikasi">Aplikasi</a>
+    </nav>
+  </header>
+
+  <main class="admin-wrap">
+    <!-- Gerbang PIN -->
+    <div class="pin-box" id="pinBox">
+      <h1>Masuk Admin</h1>
+      <p>Halaman ini dilindungi PIN. PIN default adalah <strong>1234</strong> — segera ubah setelah masuk pertama kali.</p>
+      <form id="pinForm" novalidate>
+        <label style="text-align:left">PIN Admin
+          <input type="password" id="pinInput" placeholder="Masukkan PIN" inputmode="numeric" autocomplete="current-password" required>
+        </label>
+        <p class="form-error" id="pinError" role="alert" hidden></p>
+        <button class="btn btn-primary btn-block" type="submit">Masuk</button>
+      </form>
+      <p style="margin-top:1rem"><a href="index.html">← Kembali ke Beranda</a></p>
+    </div>
+
+    <!-- Panel admin -->
+    <div id="adminPanel" hidden>
+      <h1>Panel Admin</h1>
+      <p class="admin-note">Data di bawah dibaca dari perangkat ini (localStorage). AturDuit tidak punya server — admin mengelola data lokal dan tampilan situs.</p>
+
+      <div class="admin-grid">
+        <div class="stat"><span class="stat-label">Total transaksi</span><strong class="stat-value" id="admTx">0</strong></div>
+        <div class="stat stat-in"><span class="stat-label">Total pemasukan</span><strong class="stat-value" id="admMasuk">Rp0</strong></div>
+        <div class="stat stat-out"><span class="stat-label">Total pengeluaran</span><strong class="stat-value" id="admKeluar">Rp0</strong></div>
+        <div class="stat"><span class="stat-label">Tujuan tabungan</span><strong class="stat-value" id="admGoal">0</strong></div>
+      </div>
+
+      <section class="admin-card">
+        <h2>Transaksi Terbaru</h2>
+        <div class="table-wrap">
+          <table class="tx-table">
+            <thead><tr><th>Tanggal</th><th>Kategori</th><th>Catatan</th><th class="num">Jumlah</th></tr></thead>
+            <tbody id="admList"></tbody>
+          </table>
+        </div>
+        <p class="empty-note" id="admEmpty">Belum ada transaksi di perangkat ini.</p>
+      </section>
+
+      <section class="admin-card">
+        <h2>Pengumuman Beranda</h2>
+        <p class="admin-note">Teks ini tampil sebagai banner di atas beranda untuk semua pengunjung dari perangkat ini. Kosongkan untuk menyembunyikannya.</p>
+        <form id="announceForm" novalidate>
+          <label>Isi pengumuman
+            <input type="text" id="announceInput" placeholder="contoh: Fitur ekspor CSV kini tersedia!" maxlength="140">
+          </label>
+          <div class="admin-actions">
+            <button class="btn btn-primary" type="submit">Simpan Pengumuman</button>
+            <button class="btn btn-danger-outline" type="button" id="announceHapus">Hapus Pengumuman</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="admin-card">
+        <h2>Ubah PIN Admin</h2>
+        <form id="pinChangeForm" novalidate>
+          <div class="field-row">
+            <label>PIN baru (4–8 digit)
+              <input type="password" id="pinBaru" inputmode="numeric" autocomplete="new-password" required>
+            </label>
+            <label>Ulangi PIN baru
+              <input type="password" id="pinBaruUlang" inputmode="numeric" autocomplete="new-password" required>
+            </label>
+          </div>
+          <p class="form-error" id="pinChangeError" role="alert" hidden></p>
+          <button class="btn btn-primary" type="submit">Ubah PIN</button>
+        </form>
+      </section>
+
+      <section class="admin-card">
+        <h2>Data</h2>
+        <p class="admin-note">Unduh cadangan seluruh data (transaksi + tujuan) sebagai JSON, atau hapus semuanya dari perangkat ini.</p>
+        <div class="admin-actions">
+          <button class="btn" type="button" id="btnBackup">Unduh Cadangan (JSON)</button>
+          <button class="btn btn-danger-outline" type="button" id="btnReset">Hapus Semua Data</button>
+          <button class="btn btn-danger-outline" type="button" id="btnKeluar">Keluar Admin</button>
+        </div>
+      </section>
+
+      <p><a href="index.html">← Kembali ke Beranda</a></p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>© 2026 AturDuit. Semua hak dilindungi.</p>
+      <p><a href="mailto:halo@aturduit.id">halo@aturduit.id</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="admin.js"></script>
+</body>
+</html>
