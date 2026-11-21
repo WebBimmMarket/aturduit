@@ -1,0 +1,82 @@
+html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AturDuit — Kelola Keuanganmu</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body id="top">
+  <header class="header">
+    <a class="logo" href="#top">💰 AturDuit</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Buka menu" aria-expanded="false">☰</button>
+    <nav class="nav" id="nav">
+      <a href="#fitur">Fitur</a>
+      <a href="#kalkulator">Kalkulator</a>
+      <a href="#cta">Mulai</a>
+    </nav>
+  </header>
+
+
+  <main>
+    <section class="hero">
+      <h1>Keuangan Rapi, Hidup Tenang</h1>
+      <p>Catat pemasukan, atur anggaran, dan capai tujuan tabunganmu — semua dalam satu tempat.</p>
+      <a class="btn" href="#kalkulator">Coba Kalkulator Gratis</a>
+    </section>
+
+
+    <section class="fitur" id="fitur">
+      <h2>Kenapa AturDuit?</h2>
+      <div class="cards">
+        <article class="card">
+          <h3>📝 Catat Pengeluaran</h3>
+          <p>Setiap rupiah tercatat, tidak ada lagi uang yang hilang tanpa jejak.</p>
+        </article>
+        <article class="card">
+          <h3>📊 Anggaran Bulanan</h3>
+          <p>Bagi pemasukan ke kebutuhan, keinginan, dan tabungan secara otomatis.</p>
+        </article>
+        <article class="card">
+          <h3>🎯 Tujuan Tabungan</h3>
+          <p>Tentukan target, pantau progres, dan rayakan saat tercapai.</p>
+        </article>
+      </div>
+    </section>
+
+
+    <section class="kalkulator" id="kalkulator">
+      <h2>Kalkulator Anggaran Sederhana</h2>
+      <p>Masukkan pemasukan dan pengeluaran bulananmu:</p>
+      <form class="calc" id="calcForm">
+        <label>
+          Pemasukan / bulan (Rp)
+          <input type="number" id="pemasukan" placeholder="contoh: 5000000" min="0">
+        </label>
+        <label>
+          Pengeluaran / bulan (Rp)
+          <input type="number" id="pengeluaran" placeholder="contoh: 3500000" min="0">
+        </label>
+        <button class="btn" type="submit">Hitung Sisa</button>
+        <p class="hasil" id="hasil"></p>
+      </form>
+    </section>
+
+
+    <section class="cta" id="cta">
+      <h2>Mulai Atur Keuanganmu Hari Ini</h2>
+      <p>Gratis, tanpa kartu kredit, dan bisa dipakai langsung.</p>
+      <a class="btn" href="mailto:halo@aturduit.id">Hubungi Kami</a>
+    </section>
+  </main>
+
+
+  <footer class="footer">
+    <p>© 2026 AturDuit. Semua hak dilindungi.</p>
+  </footer>
+
+
+  <script src="app.js"></script>
+</body>
+</html>
