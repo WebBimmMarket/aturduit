@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="AturDuit — aplikasi keuangan pribadi gratis. Catat pemasukan dan pengeluaran, atur anggaran 50/30/20, dan capai tujuan tabungan. Data tersimpan di perangkatmu.">
   <title>AturDuit — Kelola Keuanganmu</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23f59e0b'/%3E%3Ctext x='12' y='16.5' text-anchor='middle' font-size='11' font-weight='700' fill='%231f2937'%3ERp%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
 </head>
 <body id="top">
@@ -87,7 +88,15 @@
     <section class="app" id="aplikasi">
       <div class="container">
         <h2>Aplikasi Keuangan</h2>
-        <p class="section-sub">Semua angka di bawah dihitung dari transaksimu bulan berjalan (<span id="bulanLabel"></span>).</p>
+        <p class="section-sub">Semua angka di bawah dihitung dari transaksimu bulan yang dipilih (<span id="bulanLabel"></span>).</p>
+
+        <div class="month-nav" role="group" aria-label="Pilih bulan">
+          <button class="btn btn-small" type="button" id="btnBulanLalu" aria-label="Bulan sebelumnya">‹</button>
+          <strong id="bulanTampil"></strong>
+          <button class="btn btn-small" type="button" id="btnBulanBerikut" aria-label="Bulan berikutnya">›</button>
+          <input type="month" id="bulanPicker" aria-label="Pilih bulan">
+          <button class="btn btn-small" type="button" id="btnBulanIni">Bulan ini</button>
+        </div>
 
         <div class="stats" role="group" aria-label="Ringkasan bulan ini">
           <div class="stat"><span class="stat-label">Saldo bulan ini</span><strong class="stat-value" id="statSaldo">Rp0</strong></div>
@@ -119,7 +128,8 @@
               <input type="text" id="txCatatan" placeholder="contoh: Belanja mingguan" maxlength="80">
             </label>
             <p class="form-error" id="txError" role="alert" hidden></p>
-            <button class="btn btn-primary btn-block" type="submit">Simpan Transaksi</button>
+            <button class="btn btn-primary btn-block" type="submit" id="btnSimpanTx">Simpan Transaksi</button>
+            <button class="btn btn-block" type="button" id="btnBatalEdit" hidden>Batal Mengubah</button>
           </form>
 
           <div class="panel">
@@ -134,9 +144,19 @@
         </div>
 
         <div class="panel">
-          <h3>Anggaran 50/30/20 — Bulan Ini</h3>
-          <p class="panel-note">Dihitung dari total pemasukan bulan berjalan. Bila belum ada pemasukan, masukkan dulu pemasukanmu di atas.</p>
+          <h3>Anggaran 50/30/20 — Bulan yang Dipilih</h3>
+          <p class="panel-note">Dihitung dari total pemasukan bulan yang dipilih. Bila belum ada pemasukan, masukkan dulu pemasukanmu di atas.</p>
           <div id="budgetBars"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Tren 6 Bulan Terakhir</h3>
+          <p class="panel-note">Perbandingan pemasukan (hijau) dan pengeluaran (merah) per bulan, berakhir di bulan yang dipilih.</p>
+          <div class="trend-wrap">
+            <canvas id="trend" width="900" height="260" aria-label="Diagram tren pemasukan dan pengeluaran 6 bulan terakhir" role="img"></canvas>
+          </div>
+          <div class="trend-legend"><span><i class="dot" style="background:#059669"></i>Pemasukan</span><span><i class="dot" style="background:#ef4444"></i>Pengeluaran</span></div>
+          <p class="empty-note" id="trendEmpty" hidden>Belum ada data 6 bulan terakhir.</p>
         </div>
 
         <div class="panel">
@@ -159,7 +179,10 @@
             </table>
           </div>
           <p class="empty-note" id="txEmpty">Belum ada transaksi. Mulai dengan mencatat pemasukan atau pengeluaran pertamamu.</p>
-          <button class="btn btn-danger-outline btn-small" type="button" id="btnHapusSemua">Hapus Semua Transaksi</button>
+          <div class="tx-footer-actions">
+            <button class="btn btn-small" type="button" id="btnDemo">Isi Data Contoh</button>
+            <button class="btn btn-danger-outline btn-small" type="button" id="btnHapusSemua">Hapus Semua Transaksi</button>
+          </div>
         </div>
       </div>
     </section>
@@ -236,7 +259,7 @@
 
   <footer class="footer">
     <div class="container footer-inner">
-      <p>© 2026 AturDuit. Semua hak dilindungi.</p>
+      <p>© 2026 AturDuit v3. Semua hak dilindungi.</p>
       <p><a href="admin.html">Halaman Admin</a> · <a href="mailto:halo@aturduit.id">halo@aturduit.id</a></p>
     </div>
   </footer>

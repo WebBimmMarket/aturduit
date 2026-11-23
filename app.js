@@ -1,4 +1,4 @@
-// AturDuit v2 — pencatatan transaksi, anggaran 50/30/20, tujuan tabungan.
+// AturDuit v3 — transaksi + ubah, navigasi bulan, tren 6 bulan, data contoh, anggaran 50/30/20, tujuan tabungan.
 // Data tersimpan lokal di browser (localStorage). Tidak ada data yang dikirim ke server.
 (function () {
   "use strict";
@@ -37,6 +37,12 @@
     var d = new Date();
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
   }
+  var selectedMonth = bulanIni();
+  function geserBulan(arah) {
+    var parts = selectedMonth.split("-");
+    var d = new Date(Number(parts[0]), Number(parts[1]) - 1 + arah, 1);
+    selectedMonth = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+  }
   function namaBulan(ym) {
     var parts = ym.split("-");
     var nama = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -66,6 +72,7 @@
       var data = JSON.parse(raw);
       if (!Array.isArray(data.transactions)) data.transactions = [];
       if (!Array.isArray(data.goals)) data.goals = [];
+      data.transactions.sort(function (a, b) { return b.tanggal.localeCompare(a.tanggal); });
       return data;
     } catch (e) {
       return { transactions: [], goals: [] };
@@ -119,6 +126,7 @@
   isiKategori();
   txTanggal.value = new Date().toISOString().slice(0, 10);
 
+  var editingId = null;
   txForm.addEventListener("submit", function (event) {
     event.preventDefault();
     var jumlah = Math.floor(Number(txJumlah.value));
@@ -129,21 +137,56 @@
       return;
     }
     txError.hidden = true;
-    store.transactions.push({
-      id: uid(), tanggal: tanggal, jenis: txJenis.value,
-      kategori: txKategori.value, jumlah: jumlah,
-      catatan: txCatatan.value.trim()
-    });
+    if (editingId) {
+      var target = store.transactions.find(function (t) { return t.id === editingId; });
+      if (target) {
+        target.tanggal = tanggal; target.jenis = txJenis.value;
+        target.kategori = txKategori.value; target.jumlah = jumlah;
+        target.catatan = txCatatan.value.trim();
+      }
+      batalEdit();
+      toast("Transaksi diperbarui.");
+    } else {
+      store.transactions.push({
+        id: uid(), tanggal: tanggal, jenis: txJenis.value,
+        kategori: txKategori.value, jumlah: jumlah,
+        catatan: txCatatan.value.trim()
+      });
+      toast("Transaksi tersimpan.");
+    }
     store.transactions.sort(function (a, b) { return b.tanggal.localeCompare(a.tanggal); });
     saveStore();
     txJumlah.value = ""; txCatatan.value = "";
     renderSemua();
-    toast("Transaksi tersimpan.");
+  });
+
+  function mulaiEdit(t) {
+    editingId = t.id;
+    txTanggal.value = t.tanggal;
+    txJenis.value = t.jenis;
+    isiKategori();
+    txKategori.value = t.kategori;
+    txJumlah.value = t.jumlah;
+    txCatatan.value = t.catatan || "";
+    $("btnSimpanTx").textContent = "Simpan Perubahan";
+    $("btnBatalEdit").hidden = false;
+    txForm.scrollIntoView({ behavior: "smooth", block: "center" });
+    txJumlah.focus();
+  }
+  function batalEdit() {
+    editingId = null;
+    $("btnSimpanTx").textContent = "Simpan Transaksi";
+    $("btnBatalEdit").hidden = true;
+  }
+  $("btnBatalEdit").addEventListener("click", function () {
+    batalEdit();
+    txJumlah.value = ""; txCatatan.value = "";
+    txTanggal.value = new Date().toISOString().slice(0, 10);
   });
 
   // ---------- Render: ringkasan + diagram + anggaran + riwayat ----------
   function transaksiBulanIni() {
-    var ym = bulanIni();
+    var ym = selectedMonth;
     return store.transactions.filter(function (t) { return t.tanggal.slice(0, 7) === ym; });
   }
   function grupKategori(nama) {
@@ -157,7 +200,7 @@
     $("statSaldo").textContent = formatRupiah(masuk - keluar);
     $("statMasuk").textContent = formatRupiah(masuk);
     $("statKeluar").textContent = formatRupiah(keluar);
-    $("bulanLabel").textContent = namaBulan(bulanIni());
+    $("bulanLabel").textContent = namaBulan(selectedMonth);
     return { masuk: masuk, keluar: keluar };
   }
 
@@ -227,6 +270,7 @@
     var cari = ($("txCari").value || "").toLowerCase();
     var filter = $("txFilter").value;
     var list = store.transactions.filter(function (t) {
+      if (t.tanggal.slice(0, 7) !== selectedMonth) return false;
       if (filter !== "semua" && t.jenis !== filter) return false;
       if (cari && (t.catatan + " " + t.kategori).toLowerCase().indexOf(cari) === -1) return false;
       return true;
@@ -241,7 +285,8 @@
       tr.innerHTML =
         "<td>" + tglText + "</td><td>" + escapeHtml(t.kategori) + "</td><td>" + escapeHtml(t.catatan || "—") + "</td>" +
         '<td class="num ' + (t.jenis === "masuk" ? "in" : "out") + '">' + (t.jenis === "masuk" ? "+" : "−") + formatRupiah(t.jumlah) + "</td>" +
-        '<td><button class="tx-del" type="button" data-id="' + t.id + '" aria-label="Hapus transaksi">×</button></td>';
+        '<td class="tx-actions"><button class="tx-edit" type="button" data-id="' + t.id + '" aria-label="Ubah transaksi">Ubah</button>' +
+        '<button class="tx-del" type="button" data-id="' + t.id + '" aria-label="Hapus transaksi">×</button></td>';
       tbody.appendChild(tr);
     });
     tbody.querySelectorAll(".tx-del").forEach(function (btn) {
@@ -250,6 +295,12 @@
         saveStore();
         renderSemua();
         toast("Transaksi dihapus.");
+      });
+    });
+    tbody.querySelectorAll(".tx-edit").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var t = store.transactions.find(function (x) { return x.id === btn.getAttribute("data-id"); });
+        if (t) mulaiEdit(t);
       });
     });
   }
@@ -279,6 +330,36 @@
     saveStore();
     renderSemua();
     toast("Semua transaksi dihapus.");
+  });
+
+  // ---------- Data contoh ----------
+  $("btnDemo").addEventListener("click", function () {
+    if (store.transactions.length || store.goals.length) {
+      toast("Data sudah ada — hapus dulu untuk mencoba data contoh.");
+      return;
+    }
+    var ym = bulanIni();
+    var parts = ym.split("-");
+    var dLalu = new Date(Number(parts[0]), Number(parts[1]) - 2, 1);
+    var ymLalu = dLalu.getFullYear() + "-" + String(dLalu.getMonth() + 1).padStart(2, "0");
+    function tx(tanggal, jenis, kategori, jumlah, catatan) {
+      return { id: uid(), tanggal: tanggal, jenis: jenis, kategori: kategori, jumlah: jumlah, catatan: catatan };
+    }
+    store.transactions = [
+      tx(ym + "-01", "masuk", "Gaji", 5000000, "Gaji bulanan"),
+      tx(ym + "-02", "keluar", "Makan & Minum", 75000, "Belanja harian"),
+      tx(ym + "-03", "keluar", "Transportasi", 120000, "Bensin motor"),
+      tx(ym + "-05", "keluar", "Tagihan & Rumah", 450000, "Listrik + air"),
+      tx(ym + "-07", "keluar", "Hiburan", 150000, "Nonton + kopi"),
+      tx(ym + "-10", "masuk", "Usaha", 850000, "Jualan online"),
+      tx(ymLalu + "-01", "masuk", "Gaji", 5000000, "Gaji bulan lalu"),
+      tx(ymLalu + "-15", "keluar", "Belanja", 600000, "Belanja bulanan")
+    ];
+    store.goals = [{ id: uid(), nama: "Dana darurat", target: 10000000, terkumpul: 2500000 }];
+    saveStore();
+    renderSemua();
+    renderTujuan();
+    toast("Data contoh dimasukkan. Coba ubah atau hapus sesukamu.");
   });
 
   // ---------- Kalkulator 50/30/20 (langsung saat mengetik) ----------
@@ -368,6 +449,70 @@
     });
   }
 
+  // ---------- Tren 6 bulan ----------
+  function renderTren() {
+    var canvas = $("trend");
+    if (!canvas) return;
+    var ctx = canvas.getContext("2d");
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    var bulan = [];
+    var parts = selectedMonth.split("-");
+    for (var i = 5; i >= 0; i--) {
+      var d = new Date(Number(parts[0]), Number(parts[1]) - 1 - i, 1);
+      bulan.push(d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0"));
+    }
+    var data = bulan.map(function (ym) {
+      var masuk = 0, keluar = 0;
+      store.transactions.forEach(function (t) {
+        if (t.tanggal.slice(0, 7) !== ym) return;
+        if (t.jenis === "masuk") masuk += t.jumlah; else keluar += t.jumlah;
+      });
+      return { ym: ym, masuk: masuk, keluar: keluar };
+    });
+    var maks = 0;
+    data.forEach(function (d) { maks = Math.max(maks, d.masuk, d.keluar); });
+    var label = $("trendEmpty");
+    if (label) label.hidden = maks > 0;
+    if (maks <= 0) {
+      ctx.fillStyle = "#6b7280";
+      ctx.font = "14px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("Belum ada data 6 bulan terakhir.", W / 2, H / 2);
+      return;
+    }
+    var padBawah = 24, padAtas = 18, areaH = H - padAtas - padBawah;
+    var slotW = W / 6, barW = 26, gap = 6;
+    var namaPendek = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+    data.forEach(function (d, i) {
+      var x0 = i * slotW + (slotW - barW * 2 - gap) / 2;
+      var hMasuk = Math.round(d.masuk / maks * areaH);
+      var hKeluar = Math.round(d.keluar / maks * areaH);
+      ctx.fillStyle = "#059669";
+      ctx.fillRect(x0, padAtas + areaH - hMasuk, barW, hMasuk);
+      ctx.fillStyle = "#ef4444";
+      ctx.fillRect(x0 + barW + gap, padAtas + areaH - hKeluar, barW, hKeluar);
+      ctx.fillStyle = "#4b5563";
+      ctx.font = "12px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      var bp = d.ym.split("-");
+      ctx.fillText(namaPendek[Number(bp[1]) - 1], i * slotW + slotW / 2, H - 8);
+    });
+  }
+
+  // ---------- Navigasi bulan ----------
+  function syncBulanNav() {
+    $("bulanTampil").textContent = namaBulan(selectedMonth);
+    $("bulanPicker").value = selectedMonth;
+    $("btnBulanBerikut").disabled = selectedMonth >= bulanIni();
+  }
+  $("btnBulanLalu").addEventListener("click", function () { geserBulan(-1); renderSemua(); });
+  $("btnBulanBerikut").addEventListener("click", function () { geserBulan(1); renderSemua(); });
+  $("btnBulanIni").addEventListener("click", function () { selectedMonth = bulanIni(); renderSemua(); });
+  $("bulanPicker").addEventListener("change", function () {
+    if ($("bulanPicker").value) { selectedMonth = $("bulanPicker").value; renderSemua(); }
+  });
+
   // ---------- Render awal ----------
   function renderSemua() {
     var list = transaksiBulanIni();
@@ -375,6 +520,8 @@
     renderDonut(list);
     renderAnggaran(list);
     renderRiwayat();
+    renderTren();
+    syncBulanNav();
   }
   renderSemua();
   renderTujuan();

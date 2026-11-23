@@ -1,4 +1,4 @@
-/* AturDuit v2 — desain serius: bersih, rapi, nyaman dipakai */
+/* AturDuit v3 — desain serius: bersih, rapi, nyaman dipakai */
 :root {
   --green-900: #064e3b;
   --green-800: #065f46;
@@ -22,6 +22,7 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
@@ -214,6 +215,28 @@ input:focus, select:focus { outline: none; border-color: var(--green-600); box-s
   font-size: 1.1rem; padding: 0.2rem 0.4rem; border-radius: 0.4rem;
 }
 .tx-del:hover { color: var(--danger); background: var(--danger-soft); }
+
+/* ---------- Navigasi bulan ---------- */
+.month-nav { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.month-nav strong { font-size: 1.1rem; min-width: 10rem; text-align: center; }
+.month-nav input[type="month"] { width: auto; margin-bottom: 0; padding: 0.5rem 0.7rem; }
+.month-nav .btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+
+/* ---------- Tren ---------- */
+.trend-wrap { overflow-x: auto; }
+.trend-wrap canvas { width: 100%; height: auto; display: block; }
+.trend-legend { display: flex; gap: 1.25rem; justify-content: center; margin-top: 0.5rem; font-size: 0.92rem; color: var(--ink-soft); }
+.trend-legend .dot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 0.35rem; vertical-align: -1px; }
+
+/* ---------- Aksi transaksi ---------- */
+.tx-actions { white-space: nowrap; }
+.tx-edit {
+  background: none; border: 1px solid var(--line); color: var(--green-700);
+  font-weight: 600; font-size: 0.85rem; padding: 0.25rem 0.6rem; border-radius: 0.4rem;
+  cursor: pointer; margin-right: 0.25rem; font-family: inherit;
+}
+.tx-edit:hover { background: var(--green-50); }
+.tx-footer-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1rem; }
 
 /* ---------- Kalkulator ---------- */
 .kalkulator { padding: 4rem 0; text-align: center; }

@@ -1,4 +1,4 @@
-// Admin AturDuit — PIN lokal + ringkasan data + pengumuman.
+// Admin AturDuit v3 — PIN lokal + ringkasan data + pengumuman + pulihkan cadangan.
 // Catatan: ini situs statis tanpa server. PIN disimpan di localStorage perangkat
 // dan hanya menghalangi akses iseng, bukan pengaman tingkat server.
 (function () {
@@ -33,7 +33,9 @@
   function loadStore() {
     try {
       var data = JSON.parse(localStorage.getItem(STORE_KEY) || "{}");
-      return { transactions: Array.isArray(data.transactions) ? data.transactions : [], goals: Array.isArray(data.goals) ? data.goals : [] };
+      var tx = Array.isArray(data.transactions) ? data.transactions : [];
+      tx.sort(function (a, b) { return b.tanggal.localeCompare(a.tanggal); });
+      return { transactions: tx, goals: Array.isArray(data.goals) ? data.goals : [] };
     } catch (e) {
       return { transactions: [], goals: [] };
     }
@@ -93,6 +95,30 @@
     });
 
     try { $("announceInput").value = localStorage.getItem(ANNOUNCE_KEY) || ""; } catch (e) { /* abaikan */ }
+
+    // Ringkasan 6 bulan terakhir
+    var perBulan = {};
+    store.transactions.forEach(function (t) {
+      var ym = t.tanggal.slice(0, 7);
+      perBulan[ym] = perBulan[ym] || { masuk: 0, keluar: 0 };
+      if (t.jenis === "masuk") perBulan[ym].masuk += t.jumlah; else perBulan[ym].keluar += t.jumlah;
+    });
+    var bulanKeys = Object.keys(perBulan).sort().reverse().slice(0, 6);
+    var tbodyBulan = $("admBulan");
+    tbodyBulan.innerHTML = "";
+    $("admBulanEmpty").hidden = bulanKeys.length > 0;
+    var namaPendek = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+    bulanKeys.forEach(function (ym) {
+      var bp = ym.split("-");
+      var selisih = perBulan[ym].masuk - perBulan[ym].keluar;
+      var tr = document.createElement("tr");
+      tr.innerHTML =
+        "<td>" + namaPendek[Number(bp[1]) - 1] + " " + bp[0] + "</td>" +
+        '<td class="num in">' + formatRupiah(perBulan[ym].masuk) + "</td>" +
+        '<td class="num out">' + formatRupiah(perBulan[ym].keluar) + "</td>" +
+        '<td class="num ' + (selisih >= 0 ? "in" : "out") + '">' + formatRupiah(selisih) + "</td>";
+      tbodyBulan.appendChild(tr);
+    });
   }
 
   // ---------- Pengumuman ----------
@@ -139,6 +165,24 @@
     a.click();
     URL.revokeObjectURL(a.href);
     toast("Cadangan diunduh.");
+  });
+  $("filePulih").addEventListener("change", function (event) {
+    var file = event.target.files && event.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var data = JSON.parse(reader.result);
+        if (!Array.isArray(data.transactions) || !Array.isArray(data.goals)) throw new Error("format");
+        try { localStorage.setItem(STORE_KEY, JSON.stringify({ transactions: data.transactions, goals: data.goals })); } catch (e) { /* abaikan */ }
+        renderAdmin();
+        toast("Cadangan dipulihkan: " + data.transactions.length + " transaksi, " + data.goals.length + " tujuan.");
+      } catch (e) {
+        toast("File cadangan tidak valid.");
+      }
+      event.target.value = "";
+    };
+    reader.readAsText(file);
   });
   $("btnReset").addEventListener("click", function () {
     if (!confirm("Hapus SEMUA data AturDuit di perangkat ini (transaksi + tujuan)? Tindakan ini tidak bisa dibatalkan.")) return;
